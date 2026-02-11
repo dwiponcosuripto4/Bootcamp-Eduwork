@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile Biodata</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- NAVBAR (sticky) -->
+    <nav class="navbar" aria-label="Menu">
+      <div class="container nav-inner">
+        <div class="brand">Brand</div>
+        <div class="nav-links">
+          <a href="#header">Header</a>
+          <a href="#biodata">Biodata</a>
+          <a href="#portfolio">Portofolio</a>
+        </div>
+      </div>
+    </nav>
+
+    <main>
+      <!-- HEADER: teks kiri + gambar kanan -->
+      <section id="header" class="hero vh-section" aria-label="Header">
+        <div class="container hero-card">
+          <div class="hero-grid">
+            <div class="hero-content">
+              <h2>Selamat Datang di Website Saya</h2>
+              <p>
+                Ini adalah contoh header dengan dua kolom. Kolom kiri berisi
+                teks seperti ini.
+              </p>
+              <a class="btn" href="#portfolio">Pelajari Lebih Lanjut</a>
+            </div>
+
+            <div class="hero-media">
+              <div class="hero-frame">
+                <img src="fullbody-dwiponco.jpg" alt="Gambar Header" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- BIODATA (6 box) -->
+      <section id="biodata" class="section vh-section" aria-label="Biodata">
+        <div class="container about-wrap">
+          <h2 class="section-title">About Me</h2>
+          <p class="section-subtitle">A brief introduction about myself</p>
+
+          <div class="about-grid">
+            <div class="info-card">
+              <span class="info-label">Full Name:</span> Dwiponco Suripto
+            </div>
+            <div class="info-card">
+              <span class="info-label">Education:</span> S1 Teknologi Informasi
+            </div>
+            <div class="info-card">
+              <span class="info-label">Pekerjaan:</span> Fresh Graduate
+            </div>
+            <div class="info-card">
+              <span class="info-label">Contact:</span> 081279306116
+            </div>
+            <div class="info-card">
+              <span class="info-label">Hobi:</span> Gaming
+            </div>
+            <div class="info-card">
+              <span class="info-label">Alamat:</span> Yogyakarta
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PORTOFOLIO (konten tetap) -->
+      <section
+        id="portfolio"
+        class="section vh-section"
+        aria-label="Portofolio"
+      >
+        <div class="container portfolio-wrap">
+          <h2 class="section-title">Portofolio</h2>
+          <div class="portfolio-grid">
+            <div class="project-card">
+              <div class="project-media">
+                <img src="skrip.png" alt="Proyek 1" width="350" height="200" />
+              </div>
+              <div class="project-body">
+                <b>Sistem Website Portal Informasi Kabupaten OKU Timur</b>
+                Proyek pembuatan website portal informasi untuk Kabupaten OKU
+                Timur. Merupakan tugas magang dan sekaligus tugas akhir.
+              </div>
+            </div>
+
+            <div class="project-card">
+              <div class="project-media">
+                <img src="inv.png" alt="Proyek 2" width="350" height="200" />
+              </div>
+              <div class="project-body">
+                <b>My Inventaris</b>
+                Proeyek Pibadi pembuatan aplikasi inventaris barang menggunakan
+                PHP dan MySQL. Menggunakan framework Laravel 12 + Tailwind CSS.
+              </div>
+            </div>
+
+            <div class="project-card">
+              <div class="project-media">
+                <img src="kos.png" alt="Proyek 3" width="350" height="200" />
+              </div>
+              <div class="project-body">
+                <b>Website Kost Oemah Putri UMY</b>
+                Website frontend untuk kost Oemah Putri UMY yang menampilkan
+                informasi kamar, fasilitas, dan kontak.
+              </div>
+            </div>
+
+            <div class="project-card project-card--bottom-center">
+              <div class="project-media">
+                <img src="porto.png" alt="Proyek 4" width="350" height="200" />
+              </div>
+              <div class="project-body">
+                <b>Portofolio</b>
+                Deskripsi proyek pribadi website portofolio dibangun dengan Next
+                JS dan Tailwind.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">© 2026 Dwiponco Suripto. All rights reserved</footer>
+  </body>
+</html>
