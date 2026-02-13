@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bootstrap demo</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+
+    <style>
+      :root {
+        --c-dark: #0b1c2d;
+        --c-accent: #3fa9c9;
+        --c-light: #eaf6ff;
+
+        /* Bootstrap theme overrides */
+        --bs-body-bg: var(--c-light);
+        --bs-body-color: var(--c-dark);
+        --bs-primary: var(--c-accent);
+        --bs-link-color: var(--c-accent);
+        --bs-link-hover-color: rgba(63, 169, 201, 0.85);
+      }
+
+      body {
+        background: var(--c-light);
+        color: var(--c-dark);
+      }
+
+      /* NAVBAR */
+      .navbar.bg-body-tertiary {
+        background: linear-gradient(
+          90deg,
+          var(--c-dark) 0%,
+          var(--c-accent) 100%
+        ) !important;
+      }
+
+      .navbar .navbar-brand,
+      .navbar .nav-link {
+        color: var(--c-light) !important;
+      }
+
+      .navbar .nav-link:hover,
+      .navbar .nav-link:focus {
+        text-decoration: underline;
+      }
+
+      /* BUTTON */
+      .btn-primary {
+        --bs-btn-bg: var(--c-accent);
+        --bs-btn-border-color: var(--c-accent);
+        --bs-btn-hover-bg: rgba(63, 169, 201, 0.85);
+        --bs-btn-hover-border-color: rgba(63, 169, 201, 0.85);
+        --bs-btn-active-bg: rgba(63, 169, 201, 0.75);
+        --bs-btn-active-border-color: rgba(63, 169, 201, 0.75);
+        --bs-btn-color: var(--c-dark);
+        --bs-btn-hover-color: var(--c-dark);
+        --bs-btn-active-color: var(--c-dark);
+        --bs-btn-focus-shadow-rgb: 63, 169, 201;
+      }
+
+      /* CARD */
+      .card {
+        background: var(--c-light);
+        border-color: rgba(11, 28, 45, 0.18);
+      }
+
+      .card-title {
+        color: var(--c-dark);
+      }
+
+      .card-text {
+        color: rgba(11, 28, 45, 0.75);
+      }
+
+      /* MODAL */
+      .modal-content {
+        background: var(--c-light);
+        color: var(--c-dark);
+        border-color: rgba(11, 28, 45, 0.18);
+      }
+
+      .profile-photo {
+        width: 100%;
+        max-width: 320px;
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+        object-position: top;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+      <div class="container">
+        <a class="navbar-brand d-flex align-items-center" href="#">
+          <img
+            src="https://getbootstrap.com/docs/5.3/assets/brand/bootstrap-logo.svg"
+            alt="Bootstrap"
+            width="30"
+            height="24"
+            class="d-block"
+          />
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="#header"
+                >Header</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#biodata">Biodata</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#portfolio">Portofolio</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <section class="container mt-5" id="header">
+      <div class="row">
+        <div class="col-md-8 d-flex flex-column justify-content-center">
+          <h2>Selamat Datang di Website Saya</h2>
+          <p>
+            Ini adalah contoh header dengan dua kolom. Kolom kiri berisi teks
+            seperti ini.
+          </p>
+          <a
+            class="btn btn-primary w-auto align-self-start"
+            data-bs-toggle="modal"
+            data-bs-target="#pelajariLebihLanjut"
+            >Pelajari Lebih Lanjut</a
+          >
+          <!-- Modal -->
+          <div
+            class="modal fade"
+            id="pelajariLebihLanjut"
+            tabindex="-1"
+            aria-labelledby="pelajariLebihLanjutLabel"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="pelajariLebihLanjutLabel">
+                    Modal title
+                  </h1>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div class="modal-body">
+                  Hai Saya Dwiponco Suripto, Lulusan Teknologi Informasi dari
+                  Universitas Muhammadiyah Yogyakarta dengan minat utama pada
+                  Web Development, khususnya menggunakan Laravel. Memiliki
+                  pengalaman magang dan proyek akademik dalam pengembangan
+                  aplikasi berbasis web, REST API, serta pengelolaan sistem
+                  backend. Terbiasa bekerja secara mandiri maupun dalam tim,
+                  mampu mempelajari teknologi baru dengan cepat, dan
+                  berorientasi pada solusi yang stabil dan terstruktur.
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                  >
+                    Close
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    data-bs-dismiss="modal"
+                    onclick="location.href = '#biodata'"
+                  >
+                    Lanjut
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 d-flex align-items-center">
+          <img
+            src="fullbody-dwiponco.jpg"
+            alt="Gambar Header"
+            class="img-fluid profile-photo mx-auto d-block rounded-circle"
+          />
+        </div>
+      </div>
+    </section>
+    <section class="container py-5" id="biodata">
+      <div class="col-12 text-center">
+        <h2>About Me</h2>
+        <p>A brief introduction about myself</p>
+      </div>
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <div class="card">
+            <div class="card-body text-center">
+              <h5 class="card-title">Full Name</h5>
+              <p class="card-text">Dwiponco Suripto</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="card">
+            <div class="card-body text-center">
+              <h5 class="card-title">Education</h5>
+              <p class="card-text">S1 Teknologi Informasi</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="card">
+            <div class="card-body text-center">
+              <h5 class="card-title">Pekerjaan</h5>
+              <p class="card-text">Fresh Graduate</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="card">
+            <div class="card-body text-center">
+              <h5 class="card-title">Contact</h5>
+              <p class="card-text">6281279306116</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="card">
+            <div class="card-body text-center">
+              <h5 class="card-title">Hobi</h5>
+              <p class="card-text">Jogging, Fishing, Gaming, Badminton</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="card">
+            <div class="card-body text-center">
+              <h5 class="card-title">Alamat</h5>
+              <p class="card-text">Yogyakarta, Indonesia</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="container py-5" id="portfolio">
+      <div class="col-12 text-center">
+        <h2>Portofolio</h2>
+      </div>
+
+      <div class="row g-4 mt-1 text-center">
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="card h-100">
+            <img src="skrip.png" class="card-img-top" alt="Proyek 1" />
+            <div class="card-body">
+              <h5 class="card-title">
+                Sistem Website Portal Informasi Kabupaten OKU Timur
+              </h5>
+              <p class="card-text">
+                Proyek pembuatan website portal informasi untuk Kabupaten OKU
+                Timur. Merupakan tugas magang dan sekaligus tugas akhir.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="card h-100">
+            <img src="inv.png" class="card-img-top" alt="Proyek 2" />
+            <div class="card-body">
+              <h5 class="card-title">My Inventaris</h5>
+              <p class="card-text">
+                Proeyek Pibadi pembuatan aplikasi inventaris barang menggunakan
+                PHP dan MySQL. Menggunakan framework Laravel 12 + Tailwind CSS.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="card h-100">
+            <img src="kos.png" class="card-img-top" alt="Proyek 3" />
+            <div class="card-body">
+              <h5 class="card-title">Website Kost Oemah Putri UMY</h5>
+              <p class="card-text">
+                Website frontend untuk kost Oemah Putri UMY yang menampilkan
+                informasi kamar, fasilitas, dan kontak.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-4 offset-lg-4">
+          <div class="card h-100">
+            <img src="porto.png" class="card-img-top" alt="Proyek 4" />
+            <div class="card-body">
+              <h5 class="card-title">Portofolio</h5>
+              <p class="card-text">
+                Deskripsi proyek pribadi website portofolio dibangun dengan Next
+                JS dan Tailwind.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
