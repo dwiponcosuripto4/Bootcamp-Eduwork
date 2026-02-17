@@ -1,6 +1,6 @@
 body {
   font-family: "Poppins", sans-serif;
-  color: #0B1C2D;
+  color: #0b1c2d;
 }
 
 /* Responsive padding for mobile */
@@ -42,19 +42,19 @@ h6 {
   font-weight: 600;
 }
 .font-orange {
-  color: #3FA9C9;
+  color: #3fa9c9;
 }
 .bg-orange {
-  background-color: #3FA9C9;
+  background-color: #3fa9c9;
 }
 .bg-gray {
-  background-color: #EAF6FF;
+  background-color: #eaf6ff;
 }
 
 .btn.bg-orange {
-  background-color: #3FA9C9 !important;
+  background-color: #3fa9c9 !important;
   color: #fff !important;
-  border-color: #3FA9C9 !important;
+  border-color: #3fa9c9 !important;
 }
 
 .btn.bg-orange:hover {
@@ -76,8 +76,8 @@ h6 {
   height: 60px;
   border-radius: 50%;
   overflow: hidden;
-  border: 3px solid #EAF6FF;
-  box-shadow: 0 0 15px 1px #3FA9C9;
+  border: 3px solid #eaf6ff;
+  box-shadow: 0 0 15px 1px #3fa9c9;
 }
 
 .brand-photo img {
@@ -96,14 +96,14 @@ h6 {
 .brand-name {
   font-size: 24px;
   font-weight: 700;
-  color: #0B1C2D;
+  color: #0b1c2d;
   letter-spacing: 1px;
 }
 
 .brand-title {
   font-size: 14px;
   font-weight: 400;
-  color: #0B1C2D;
+  color: #0b1c2d;
 }
 
 .profile-photo {
@@ -116,7 +116,7 @@ h6 {
   border: 3px solid transparent;
   background:
     linear-gradient(white, white) padding-box,
-    linear-gradient(180deg, #EAF6FF 0%, #3FA9C9 100%) border-box;
+    linear-gradient(180deg, #eaf6ff 0%, #3fa9c9 100%) border-box;
 }
 
 .progress {
@@ -131,7 +131,7 @@ h6 {
 .swiper-slide {
   text-align: center;
   font-size: 18px;
-  background: #0B1C2D;
+  background: #0b1c2d;
   display: flex;
   justify-content: center;
   align-items: center;
