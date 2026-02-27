@@ -90,7 +90,7 @@ if (session_status() === PHP_SESSION_ACTIVE) {
             <div class="col-12 d-flex align-items-center justify-content-between">
                 <!-- Logo -->
                 <a class="navbar-brand fw-bold mb-0" href="<?php echo htmlspecialchars($homeLink); ?>" style="width: 180px;">
-                    Bootcamp Eduwork
+                    Natlan Store
                 </a>
 
                 <!-- Search Bar (Desktop Center) -->
