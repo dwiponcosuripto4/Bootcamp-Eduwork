@@ -5,6 +5,7 @@ $basePath = isset($navbarBasePath) ? (string) $navbarBasePath : '';
 $homeLink = $basePath . 'home.php';
 $cartLink = $basePath . 'cart.php';
 $productsLink = $basePath . 'admin/products/index.php';
+$transactionsLink = $basePath . 'admin/transactions/index.php';
 $createProductLink = $basePath . 'admin/products/create.php';
 
 // Get search and category params
@@ -115,10 +116,10 @@ if (session_status() === PHP_SESSION_ACTIVE) {
                     <!-- Navigation Links (Desktop) -->
                     <ul class="navbar-nav d-none d-lg-flex flex-row mb-0">
                         <li class="nav-item">
-                            <a class="nav-link <?php echo $currentPage === 'home' ? 'active' : ''; ?>" href="<?php echo htmlspecialchars($homeLink); ?>">Home</a>
+                            <a class="nav-link <?php echo $currentPage === 'products-index' ? 'active' : ''; ?>" href="<?php echo htmlspecialchars($productsLink); ?>">Produk</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link <?php echo $currentPage === 'products-index' ? 'active' : ''; ?>" href="<?php echo htmlspecialchars($productsLink); ?>">Produk</a>
+                            <a class="nav-link <?php echo $currentPage === 'transactions-index' ? 'active' : ''; ?>" href="<?php echo htmlspecialchars($transactionsLink); ?>">Transaksi</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link <?php echo $currentPage === 'create-product' ? 'active' : ''; ?>" href="<?php echo htmlspecialchars($createProductLink); ?>">Tambah Produk</a>
@@ -167,6 +168,9 @@ if (session_status() === PHP_SESSION_ACTIVE) {
                         </li>
                         <li class="nav-item">
                             <a class="nav-link <?php echo $currentPage === 'products-index' ? 'active' : ''; ?>" href="<?php echo htmlspecialchars($productsLink); ?>">Produk</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link <?php echo $currentPage === 'transactions-index' ? 'active' : ''; ?>" href="<?php echo htmlspecialchars($transactionsLink); ?>">Transaksi</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link <?php echo $currentPage === 'create-product' ? 'active' : ''; ?>" href="<?php echo htmlspecialchars($createProductLink); ?>">Tambah Produk</a>

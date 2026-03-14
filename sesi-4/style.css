@@ -1,6 +1,20 @@
+:root {
+  --c-dark: #0b1c2d;
+  --c-accent: #3fa9c9;
+  --c-light: #eaf6ff;
+
+  /* Bootstrap theme overrides */
+  --bs-body-bg: var(--c-light);
+  --bs-body-color: var(--c-dark);
+  --bs-primary: var(--c-accent);
+  --bs-link-color: var(--c-accent);
+  --bs-link-hover-color: rgba(63, 169, 201, 0.85);
+}
+
 body {
   font-family: "Poppins", sans-serif;
-  color: #0b1c2d;
+  background: var(--c-light);
+  color: var(--c-dark);
 }
 
 /* Responsive padding for mobile */
@@ -41,6 +55,27 @@ h5,
 h6 {
   font-weight: 600;
 }
+
+/* NAVBAR */
+.navbar.bg-body-tertiary {
+  background: linear-gradient(
+    90deg,
+    var(--c-dark) 0%,
+    var(--c-accent) 100%
+  ) !important;
+}
+
+.navbar .navbar-brand-custom .brand-name,
+.navbar .navbar-brand-custom .brand-title,
+.navbar .nav-link {
+  color: var(--c-light) !important;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link:focus {
+  text-decoration: underline;
+}
+
 .font-orange {
   color: #3fa9c9;
 }
@@ -51,16 +86,27 @@ h6 {
   background-color: #eaf6ff;
 }
 
+/* BUTTON */
 .btn.bg-orange {
-  background-color: #3fa9c9 !important;
-  color: #fff !important;
-  border-color: #3fa9c9 !important;
+  --bs-btn-bg: var(--c-accent);
+  --bs-btn-border-color: var(--c-accent);
+  --bs-btn-hover-bg: rgba(63, 169, 201, 0.85);
+  --bs-btn-hover-border-color: rgba(63, 169, 201, 0.85);
+  --bs-btn-active-bg: rgba(63, 169, 201, 0.75);
+  --bs-btn-active-border-color: rgba(63, 169, 201, 0.75);
+  --bs-btn-color: var(--c-dark);
+  --bs-btn-hover-color: var(--c-dark);
+  --bs-btn-active-color: var(--c-dark);
+  --bs-btn-focus-shadow-rgb: 63, 169, 201;
+  background-color: var(--c-accent) !important;
+  color: var(--c-dark) !important;
+  border-color: var(--c-accent) !important;
 }
 
 .btn.bg-orange:hover {
-  background-color: #2d8aa8 !important;
-  color: #fff !important;
-  border-color: #2d8aa8 !important;
+  background-color: rgba(63, 169, 201, 0.85) !important;
+  color: var(--c-dark) !important;
+  border-color: rgba(63, 169, 201, 0.85) !important;
 }
 
 /* Custom Navbar Brand */
@@ -76,8 +122,8 @@ h6 {
   height: 60px;
   border-radius: 50%;
   overflow: hidden;
-  border: 3px solid #eaf6ff;
-  box-shadow: 0 0 15px 1px #3fa9c9;
+  border: 3px solid var(--c-light);
+  box-shadow: 0 0 15px 1px var(--c-accent);
 }
 
 .brand-photo img {
@@ -96,14 +142,14 @@ h6 {
 .brand-name {
   font-size: 24px;
   font-weight: 700;
-  color: #0b1c2d;
+  color: var(--c-dark);
   letter-spacing: 1px;
 }
 
 .brand-title {
   font-size: 14px;
   font-weight: 400;
-  color: #0b1c2d;
+  color: var(--c-dark);
 }
 
 .profile-photo {
@@ -116,11 +162,36 @@ h6 {
   border: 3px solid transparent;
   background:
     linear-gradient(white, white) padding-box,
-    linear-gradient(180deg, #eaf6ff 0%, #3fa9c9 100%) border-box;
+    linear-gradient(180deg, var(--c-light) 0%, var(--c-accent) 100%) border-box;
+}
+
+/* CARD */
+.card {
+  background: var(--c-light);
+  border-color: rgba(11, 28, 45, 0.18);
+}
+
+.card-title {
+  color: var(--c-dark);
+}
+
+.card-text {
+  color: rgba(11, 28, 45, 0.75);
+}
+
+/* MODAL */
+.modal-content {
+  background: var(--c-light);
+  color: var(--c-dark);
+  border-color: rgba(11, 28, 45, 0.18);
 }
 
 .progress {
   background-color: #d5f0f9;
+}
+
+.progress-bar.bg-orange {
+  background-color: var(--c-accent) !important;
 }
 
 .swiper {
@@ -131,7 +202,7 @@ h6 {
 .swiper-slide {
   text-align: center;
   font-size: 18px;
-  background: #0b1c2d;
+  background: var(--c-dark);
   display: flex;
   justify-content: center;
   align-items: center;

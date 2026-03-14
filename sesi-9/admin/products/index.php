@@ -5,6 +5,72 @@ require_once __DIR__ . '/../../components/template.php';
 $errors = [];
 $successMessage = '';
 
+if (isset($_POST['action']) && $_POST['action'] === 'bulk_delete') {
+    $deleteIds = isset($_POST['product_ids']) && is_array($_POST['product_ids']) ? $_POST['product_ids'] : [];
+    $deletedCount = 0;
+
+    foreach ($deleteIds as $rawId) {
+        $deleteId = (int) $rawId;
+        if ($deleteId <= 0) {
+            continue;
+        }
+
+        $checkStmt = $conn->prepare('SELECT COUNT(*) as total FROM transaction_items WHERE product_id = ?');
+        if (!$checkStmt) {
+            $errors[] = 'Gagal memeriksa data transaksi produk.';
+            continue;
+        }
+
+        $checkStmt->bind_param('i', $deleteId);
+        $checkStmt->execute();
+        $checkResult = $checkStmt->get_result();
+        $checkData = $checkResult ? $checkResult->fetch_assoc() : null;
+        $checkStmt->close();
+
+        if ($checkData && (int) $checkData['total'] > 0) {
+            $errors[] = 'Produk ID ' . $deleteId . ' tidak dapat dihapus karena sudah digunakan dalam transaksi.';
+            continue;
+        }
+
+        $selectStmt = $conn->prepare('SELECT image FROM products WHERE id = ?');
+        if (!$selectStmt) {
+            $errors[] = 'Data produk tidak bisa diambil untuk proses hapus.';
+            continue;
+        }
+
+        $selectStmt->bind_param('i', $deleteId);
+        $selectStmt->execute();
+        $deleteResult = $selectStmt->get_result();
+        $productToDelete = $deleteResult ? $deleteResult->fetch_assoc() : null;
+        $selectStmt->close();
+
+        $deleteStmt = $conn->prepare('DELETE FROM products WHERE id = ?');
+        if (!$deleteStmt) {
+            $errors[] = 'Query hapus gagal diproses.';
+            continue;
+        }
+
+        $deleteStmt->bind_param('i', $deleteId);
+        if ($deleteStmt->execute()) {
+            $deletedCount++;
+            if (!empty($productToDelete['image'])) {
+                $imageFullPath = __DIR__ . '/../../' . ltrim($productToDelete['image'], '/');
+                if (file_exists($imageFullPath)) {
+                    unlink($imageFullPath);
+                }
+            }
+        } else {
+            $errors[] = 'Gagal menghapus produk ID ' . $deleteId . ': ' . $deleteStmt->error;
+        }
+        $deleteStmt->close();
+    }
+
+    if ($deletedCount > 0) {
+        header('Location: index.php?success=bulk_deleted&count=' . $deletedCount);
+        exit;
+    }
+}
+
 if (isset($_GET['action']) && $_GET['action'] === 'delete') {
     $deleteId = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 
@@ -70,6 +136,9 @@ if ($result) {
 if (isset($_GET['success'])) {
     if ($_GET['success'] === 'deleted') {
         $successMessage = 'Produk berhasil dihapus.';
+    } elseif ($_GET['success'] === 'bulk_deleted') {
+        $count = isset($_GET['count']) ? (int) $_GET['count'] : 0;
+        $successMessage = $count . ' produk berhasil dihapus.';
     } elseif ($_GET['success'] === 'updated') {
         $successMessage = 'Produk berhasil diperbarui.';
     }
@@ -390,6 +459,38 @@ renderTemplateStart('CRUD Produk', 'products-index', '../../');
     .alert-modern i {
         font-size: 1.5rem;
     }
+
+    .product-checkbox,
+    .select-all-checkbox {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+        accent-color: #E53935;
+    }
+
+    #bulkDeleteBtn {
+        display: none;
+    }
+
+    #bulkDeleteBtn.show {
+        display: inline-block;
+    }
+
+    .btn-bulk-delete {
+        background: #dc3545;
+        color: #fff;
+        border: none;
+        padding: .5rem 1rem;
+        border-radius: 6px;
+        font-weight: 600;
+        transition: all .3s;
+    }
+
+    .btn-bulk-delete:hover {
+        background: #c82333;
+        transform: translateY(-2px);
+        box-shadow: 0 2px 8px rgba(220, 53, 69, .4);
+    }
 </style>
 
 <div class="row">
@@ -483,84 +584,96 @@ renderTemplateStart('CRUD Produk', 'products-index', '../../');
 
         <!-- Products Table -->
         <div class="content-card card">
-            <div class="card-header">
-                <h5><i class="bi bi-table me-2"></i>Daftar Produk</h5>
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-table me-2"></i>Daftar Produk</h5>
+                <button type="button" id="bulkDeleteBtn" class="btn btn-bulk-delete" onclick="bulkDeleteProducts()">
+                    <i class="bi bi-trash me-2"></i>Hapus yang Dipilih (<span id="selectedCount">0</span>)
+                </button>
             </div>
             <div class="card-body">
-                <table id="productsTable" class="table align-middle mb-0" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th class="sortable"><i class="bi bi-hash"></i>ID</th>
-                            <th><i class="bi bi-image"></i>Gambar</th>
-                            <th class="sortable"><i class="bi bi-box-seam"></i>Nama Produk</th>
-                            <th class="sortable"><i class="bi bi-tag"></i>Kategori</th>
-                            <th class="sortable"><i class="bi bi-currency-dollar"></i>Harga</th>
-                            <th class="text-end"><i class="bi bi-gear"></i>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (empty($products)): ?>
+                <form id="bulkDeleteForm" method="POST" action="">
+                    <input type="hidden" name="action" value="bulk_delete">
+                    <table id="productsTable" class="table align-middle mb-0" style="width:100%">
+                        <thead>
                             <tr>
-                                <td colspan="6" class="text-center">Belum ada data produk.</td>
+                                <th style="width: 30px;">
+                                    <input type="checkbox" class="select-all-checkbox" id="selectAll" title="Pilih Semua">
+                                </th>
+                                <th class="sortable"><i class="bi bi-hash"></i>ID</th>
+                                <th><i class="bi bi-image"></i>Gambar</th>
+                                <th class="sortable"><i class="bi bi-box-seam"></i>Nama Produk</th>
+                                <th class="sortable"><i class="bi bi-tag"></i>Kategori</th>
+                                <th class="sortable"><i class="bi bi-currency-dollar"></i>Harga</th>
+                                <th class="text-end"><i class="bi bi-gear"></i>Aksi</th>
                             </tr>
-                        <?php else: ?>
-                            <?php foreach ($products as $product): ?>
-                                <?php
-                                $imageUrl = '';
-                                $imageRelativePath = isset($product['image']) ? (string) $product['image'] : '';
-                                $imageAbsolutePath = $imageRelativePath !== '' ? (__DIR__ . '/../../' . ltrim($imageRelativePath, '/')) : '';
-                                $descriptionText = isset($product['description']) ? (string) $product['description'] : '';
-                                $descriptionPreview = strlen($descriptionText) > 80 ? (substr($descriptionText, 0, 80) . '...') : $descriptionText;
-                                if ($imageRelativePath !== '' && file_exists($imageAbsolutePath)) {
-                                    $imageUrl = '../../' . ltrim($imageRelativePath, '/');
-                                }
-                                ?>
+                        </thead>
+                        <tbody>
+                            <?php if (empty($products)): ?>
                                 <tr>
-                                    <td><strong>#<?php echo str_pad($product['id'], 4, '0', STR_PAD_LEFT); ?></strong></td>
-                                    <td>
-                                        <?php if ($imageUrl !== ''): ?>
-                                            <img src="<?php echo htmlspecialchars($imageUrl); ?>"
-                                                alt="<?php echo htmlspecialchars($product['name']); ?>"
-                                                class="product-img-table"
-                                                title="Klik untuk perbesar">
-                                        <?php else: ?>
-                                            <div style="width: 60px; height: 60px; background: #e9ecef; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-                                                <i class="bi bi-image text-muted"></i>
-                                            </div>
-                                        <?php endif; ?>
-                                    </td>
-                                    <td>
-                                        <div class="product-name-cell"><?php echo htmlspecialchars($product['name']); ?></div>
-                                        <div class="product-desc-cell"><?php echo htmlspecialchars($descriptionPreview); ?></div>
-                                    </td>
-                                    <td>
-                                        <span class="category-badge">
-                                            <i class="bi bi-tag me-1"></i><?php echo htmlspecialchars($product['category']); ?>
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span class="price-cell">Rp <?php echo number_format((float) $product['price'], 0, ',', '.'); ?></span>
-                                    </td>
-                                    <td class="text-end">
-                                        <div class="d-flex gap-2 justify-content-end">
-                                            <a href="edit.php?id=<?php echo (int) $product['id']; ?>"
-                                                class="btn btn-action btn-edit"
-                                                title="Edit Produk">
-                                                <i class="bi bi-pencil-square me-1"></i>Edit
-                                            </a>
-                                            <a href="index.php?action=delete&id=<?php echo (int) $product['id']; ?>"
-                                                class="btn btn-action btn-delete"
-                                                onclick="return confirm('⚠️ PERINGATAN!\n\nYakin ingin menghapus produk ini?\n\nCatatan: Produk yang sudah digunakan dalam transaksi tidak dapat dihapus untuk menjaga integritas data.');"
-                                                title="Hapus Produk">
-                                                <i class="bi bi-trash me-1"></i>Hapus
-                                            </a>
-                                        </div>
-                                    </td>
+                                    <td colspan="7" class="text-center">Belum ada data produk.</td>
                                 </tr>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
+                            <?php else: ?>
+                                <?php foreach ($products as $product): ?>
+                                    <?php
+                                    $imageUrl = '';
+                                    $imageRelativePath = isset($product['image']) ? (string) $product['image'] : '';
+                                    $imageAbsolutePath = $imageRelativePath !== '' ? (__DIR__ . '/../../' . ltrim($imageRelativePath, '/')) : '';
+                                    $descriptionText = isset($product['description']) ? (string) $product['description'] : '';
+                                    $descriptionPreview = strlen($descriptionText) > 80 ? (substr($descriptionText, 0, 80) . '...') : $descriptionText;
+                                    if ($imageRelativePath !== '' && file_exists($imageAbsolutePath)) {
+                                        $imageUrl = '../../' . ltrim($imageRelativePath, '/');
+                                    }
+                                    ?>
+                                    <tr>
+                                        <td>
+                                            <input type="checkbox" name="product_ids[]" value="<?php echo (int) $product['id']; ?>" class="product-checkbox">
+                                        </td>
+                                        <td><strong>#<?php echo str_pad($product['id'], 4, '0', STR_PAD_LEFT); ?></strong></td>
+                                        <td>
+                                            <?php if ($imageUrl !== ''): ?>
+                                                <img src="<?php echo htmlspecialchars($imageUrl); ?>"
+                                                    alt="<?php echo htmlspecialchars($product['name']); ?>"
+                                                    class="product-img-table"
+                                                    title="Klik untuk perbesar">
+                                            <?php else: ?>
+                                                <div style="width: 60px; height: 60px; background: #e9ecef; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                                    <i class="bi bi-image text-muted"></i>
+                                                </div>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td>
+                                            <div class="product-name-cell"><?php echo htmlspecialchars($product['name']); ?></div>
+                                            <div class="product-desc-cell"><?php echo htmlspecialchars($descriptionPreview); ?></div>
+                                        </td>
+                                        <td>
+                                            <span class="category-badge">
+                                                <i class="bi bi-tag me-1"></i><?php echo htmlspecialchars($product['category']); ?>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="price-cell">Rp <?php echo number_format((float) $product['price'], 0, ',', '.'); ?></span>
+                                        </td>
+                                        <td class="text-end">
+                                            <div class="d-flex gap-2 justify-content-end">
+                                                <a href="edit.php?id=<?php echo (int) $product['id']; ?>"
+                                                    class="btn btn-action btn-edit"
+                                                    title="Edit Produk">
+                                                    <i class="bi bi-pencil-square me-1"></i>Edit
+                                                </a>
+                                                <a href="index.php?action=delete&id=<?php echo (int) $product['id']; ?>"
+                                                    class="btn btn-action btn-delete"
+                                                    onclick="return confirm('⚠️ PERINGATAN!\n\nYakin ingin menghapus produk ini?\n\nCatatan: Produk yang sudah digunakan dalam transaksi tidak dapat dihapus untuk menjaga integritas data.');"
+                                                    title="Hapus Produk">
+                                                    <i class="bi bi-trash me-1"></i>Hapus
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </form>
             </div>
         </div>
     </div>
@@ -573,10 +686,14 @@ renderTemplateStart('CRUD Produk', 'products-index', '../../');
     document.addEventListener('DOMContentLoaded', function() {
         let table = new DataTable('#productsTable', {
             order: [
-                [0, 'desc']
+                [1, 'desc']
             ],
             pageLength: 10,
             lengthMenu: [10, 25, 50, 100],
+            columnDefs: [{
+                orderable: false,
+                targets: [0, 2, 6]
+            }],
             language: {
                 search: 'Cari:',
                 lengthMenu: 'Tampilkan _MENU_ data',
@@ -591,7 +708,66 @@ renderTemplateStart('CRUD Produk', 'products-index', '../../');
                 }
             }
         });
+
+        const selectAllCheckbox = document.getElementById('selectAll');
+        const productCheckboxes = document.querySelectorAll('.product-checkbox');
+        const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
+        const selectedCountSpan = document.getElementById('selectedCount');
+
+        if (selectAllCheckbox) {
+            selectAllCheckbox.addEventListener('change', function() {
+                productCheckboxes.forEach(function(checkbox) {
+                    checkbox.checked = selectAllCheckbox.checked;
+                });
+                updateBulkDeleteButton();
+            });
+        }
+
+        productCheckboxes.forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                updateSelectAllState();
+                updateBulkDeleteButton();
+            });
+        });
+
+        function updateSelectAllState() {
+            const totalCheckboxes = productCheckboxes.length;
+            const checkedCheckboxes = document.querySelectorAll('.product-checkbox:checked').length;
+
+            if (selectAllCheckbox) {
+                selectAllCheckbox.checked = totalCheckboxes > 0 && totalCheckboxes === checkedCheckboxes;
+                selectAllCheckbox.indeterminate = checkedCheckboxes > 0 && checkedCheckboxes < totalCheckboxes;
+            }
+        }
+
+        function updateBulkDeleteButton() {
+            const checkedCount = document.querySelectorAll('.product-checkbox:checked').length;
+            if (selectedCountSpan) {
+                selectedCountSpan.textContent = checkedCount;
+            }
+
+            if (checkedCount > 0) {
+                bulkDeleteBtn.classList.add('show');
+            } else {
+                bulkDeleteBtn.classList.remove('show');
+            }
+        }
     });
+
+    function bulkDeleteProducts() {
+        const checkedCount = document.querySelectorAll('.product-checkbox:checked').length;
+
+        if (checkedCount === 0) {
+            alert('Pilih minimal satu produk untuk dihapus.');
+            return;
+        }
+
+        const confirmMessage = '⚠️ PERINGATAN!\n\nYakin ingin menghapus ' + checkedCount + ' produk yang dipilih?\n\nProduk yang sudah digunakan dalam transaksi tidak dapat dihapus.';
+
+        if (confirm(confirmMessage)) {
+            document.getElementById('bulkDeleteForm').submit();
+        }
+    }
 </script>
 
 <?php renderTemplateEnd(); ?>
