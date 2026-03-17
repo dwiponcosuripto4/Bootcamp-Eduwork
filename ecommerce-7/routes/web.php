@@ -17,8 +17,9 @@ Route::get('/', function () {
     ];
     return view('home', compact('products'));
 });
+Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/keranjang', [CartController::class, 'index'])->name('cart.index');
-Route::get('/product-detail/', [HomeController::class, 'productDetails']);
+Route::get('/product-detail/{slug}', [HomeController::class, 'productDetails'])->name('product.detail');
 
 Route::prefix('admin')->group(function () {
     Route::get('/dashboard', function () {

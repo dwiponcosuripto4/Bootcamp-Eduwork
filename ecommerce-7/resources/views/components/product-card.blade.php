@@ -1,4 +1,4 @@
-<div class="product-card card border-0 shadow-sm h-100">
+<div class="product-card card border-0 shadow-sm h-100 position-relative">
     <div class="position-relative overflow-hidden" style="aspect-ratio: 1 / 1;">
         <img src="{{ $image }}" class="w-100 h-100" alt="{{ $name }}" style="object-fit: cover;"
             onerror="this.onerror=null;this.src='https://via.placeholder.com/400x400?text=No+Image';">
@@ -22,10 +22,13 @@
             <span style="color: #f8a740;">★★★★<span style="color: #ddd;">★</span></span>
             <span>120 terjual</span>
         </div>
-
-        <a href="#" class="btn btn-sm w-100 mt-auto"
+        <a href="{{ route('product.detail', ['slug' => $slug]) }}" class="stretched-link"
+            aria-label="Lihat detail {{ $name }}"></a>
+        <a href="#" class="btn btn-sm w-100 mt-auto position-relative z-1"
             style="background: #E53935; color: #fff; font-size: .78rem; border: none;">
             + Keranjang
         </a>
     </div>
+
+
 </div>

@@ -44,7 +44,11 @@
         <div class="row w-100 g-0 align-items-center">
             <div class="col-12 d-flex align-items-center justify-content-between">
                 <a class="navbar-brand fw-bold mb-0" href="/" style="width: 180px;">Natlan Store</a>
-
+                <form action="{{ route('home') }}" method="GET" class="d-flex" role="search">
+                    <input class="form-control me-2" type="search" name="search" value="{{ request('search') }}"
+                        placeholder="Search" aria-label="Search" />
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
                 <div class="d-flex align-items-center gap-2">
                     <ul class="navbar-nav d-none d-lg-flex flex-row mb-0">
                         <li class="nav-item">
@@ -68,7 +72,9 @@
                         aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
+
                 </div>
+
             </div>
 
             <div class="col-12">
@@ -83,8 +89,11 @@
                                 href="{{ route('cart.index') }}">Keranjang</a>
                         </li>
                     </ul>
+
                 </div>
+
             </div>
+
         </div>
     </div>
 </nav>

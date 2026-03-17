@@ -44,11 +44,21 @@
                 </div>
 
                 <div class="row row-cols-2 row-cols-md-3 row-cols-lg-3 row-cols-xl-4 g-3">
-                    @foreach ($products as $product)
+                    @forelse ($products as $product)
                         <div class="col">
-                            <x-product-card :name="$product['name']" :price="$product['price']" :image="$product['image']" :category="$product['category'] ?? 'Umum'" />
+                            <x-product-card :name="$product->name" :price="$product->price" :image="$product->image" :category="$product->category ?? 'Umum'"
+                                :slug="$product->slug" />
                         </div>
-                    @endforeach
+                    @empty
+                        <div class="col-12">
+                            <div class="alert alert-warning mb-0" role="alert">
+                                Produk tidak ditemukan.
+                            </div>
+                        </div>
+                    @endforelse
+                </div>
+                <div class="d-flex justify-content-center mt-4">
+                    {{ $products->links('pagination::bootstrap-5') }}
                 </div>
             </div>
         </div>
