@@ -1,5 +1,6 @@
 @php
     $cartTotalQty = 0;
+    $currentSearch = request('search', '');
     $cart = session('cart', []);
     if (is_array($cart)) {
         foreach ($cart as $qty) {
@@ -41,32 +42,46 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
     <div class="container">
-        <div class="row w-100 g-0 align-items-center">
+        <div class="row w-100 g-0 align-items-center position-relative">
             <div class="col-12 d-flex align-items-center justify-content-between">
                 <a class="navbar-brand fw-bold mb-0" href="/" style="width: 180px;">Natlan Store</a>
-                <form action="{{ route('home') }}" method="GET" class="d-flex" role="search">
-                    <input class="form-control me-2" type="search" name="search" value="{{ request('search') }}"
-                        placeholder="Search" aria-label="Search" />
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
+
+                <div class="d-none d-lg-block position-absolute top-50 start-50"
+                    style="width: 45vw; max-width: 620px; transform: translate(-50%, -50%);">
+                    <form method="GET" action="{{ url('/') }}" class="w-100" role="search">
+                        <div class="input-group w-100">
+                            <input type="text" class="form-control" name="search" placeholder="Cari produk..."
+                                value="{{ $currentSearch }}" aria-label="Search">
+                            <button class="btn btn-light" type="submit">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
                 <div class="d-flex align-items-center gap-2">
                     <ul class="navbar-nav d-none d-lg-flex flex-row mb-0">
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('cart.index') ? '' : 'active' }}"
-                                href="/">Home</a>
-                        </li>
                     </ul>
 
-                    <a href="{{ route('cart.index') }}" class="btn btn-outline-light position-relative">
-                        <i class="bi bi-cart3"></i>
-                        @if ($cartTotalQty > 0)
-                            <span
-                                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                {{ $cartTotalQty }}
-                            </span>
-                        @endif
-                    </a>
-
+                    @if (Route::has('login'))
+                        @auth
+                            <a href="{{ url('/dashboard') }}" class="btn btn-sm btn-light">Dashboard</a>
+                            <a href="{{ route('cart.index') }}" class="btn btn-outline-light position-relative">
+                                <i class="bi bi-cart3"></i>
+                                @if ($cartTotalQty > 0)
+                                    <span
+                                        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                        {{ $cartTotalQty }}
+                                    </span>
+                                @endif
+                            </a>
+                        @else
+                            <a href="{{ route('login') }}" class="btn btn-sm btn-outline-light">Login</a>
+                            @if (Route::has('register'))
+                                <a href="{{ route('register') }}" class="btn btn-sm btn-light">Register</a>
+                            @endif
+                        @endauth
+                    @endif
                     <button class="navbar-toggler border-0 p-1 ms-2" type="button" data-bs-toggle="collapse"
                         data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false"
                         aria-label="Toggle navigation">
@@ -79,15 +94,37 @@
 
             <div class="col-12">
                 <div class="collapse navbar-collapse" id="mainNavbar">
+                    <form method="GET" action="{{ url('/') }}" class="d-lg-none mt-3 mb-2" role="search">
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="search" placeholder="Cari produk..."
+                                value="{{ $currentSearch }}" aria-label="Search">
+                            <button class="btn btn-light" type="submit">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </form>
+
                     <ul class="navbar-nav d-lg-none mt-2">
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('cart.index') ? '' : 'active' }}"
-                                href="/">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('cart.index') ? 'active' : '' }}"
-                                href="{{ route('cart.index') }}">Keranjang</a>
-                        </li>
+                        @if (Route::has('login'))
+                            @auth
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ url('/dashboard') }}">Dashboard</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->routeIs('cart.index') ? 'active' : '' }}"
+                                        href="{{ route('cart.index') }}">Keranjang</a>
+                                </li>
+                            @else
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('login') }}">Login</a>
+                                </li>
+                                @if (Route::has('register'))
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ route('register') }}">Register</a>
+                                    </li>
+                                @endif
+                            @endauth
+                        @endif
                     </ul>
 
                 </div>

@@ -57,7 +57,7 @@
                         </div>
                     @endforelse
                 </div>
-                <div class="d-flex justify-content-center mt-4">
+                <div class="pagination-wrap mt-4">
                     {{ $products->links('pagination::bootstrap-5') }}
                 </div>
             </div>
@@ -97,6 +97,59 @@
             font-weight: 600;
             border-left-color: #FFDD5E;
             border-left-width: 4px;
+        }
+
+        .pagination {
+            gap: .45rem;
+            margin-bottom: 0;
+        }
+
+        .pagination-wrap nav .d-none.flex-sm-fill.d-sm-flex {
+            gap: 1.25rem;
+        }
+
+        .pagination-wrap nav .d-none.flex-sm-fill.d-sm-flex>div:first-child {
+            margin-right: 1.25rem;
+        }
+
+        .pagination-wrap nav p.small.text-muted {
+            margin-bottom: 0;
+            white-space: nowrap;
+        }
+
+        .pagination .page-item .page-link {
+            border: none;
+            min-width: 42px;
+            height: 42px;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: #7A0C0C;
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(229, 57, 53, 0.14);
+            transition: all .2s ease;
+        }
+
+        .pagination .page-item .page-link:hover {
+            background: #FFF1F1;
+            color: #E53935;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(229, 57, 53, 0.2);
+        }
+
+        .pagination .page-item.active .page-link {
+            background: linear-gradient(135deg, #E53935, #7A0C0C);
+            color: #fff;
+            box-shadow: 0 6px 16px rgba(122, 12, 12, 0.35);
+        }
+
+        .pagination .page-item.disabled .page-link {
+            background: #f7f7f7;
+            color: #b6b6b6;
+            box-shadow: none;
+            cursor: not-allowed;
         }
     </style>
 @endsection
