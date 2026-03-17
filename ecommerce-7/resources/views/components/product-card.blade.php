@@ -1,6 +1,6 @@
 <div class="product-card card border-0 shadow-sm h-100 position-relative">
     <div class="position-relative overflow-hidden" style="aspect-ratio: 1 / 1;">
-        <img src="{{ $image }}" class="w-100 h-100" alt="{{ $name }}" style="object-fit: cover;"
+        <img src="{{ asset('images/' . $image) }}" class="w-100 h-100" alt="{{ $name }}" style="object-fit: cover;"
             onerror="this.onerror=null;this.src='https://via.placeholder.com/400x400?text=No+Image';">
         <span class="position-absolute top-0 start-0 m-2 badge"
             style="background: rgba(0, 0, 0, .45); font-size: .65rem; backdrop-filter: blur(2px);">

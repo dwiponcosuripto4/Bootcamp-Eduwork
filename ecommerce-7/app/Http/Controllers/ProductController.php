@@ -12,7 +12,13 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return view('admin.product.index');
+        $products = Product::with('product_category')
+            ->orderBy('created_at', 'desc');
+            if(request('search')) {
+                $products->where('name', 'like', '%' . request('search') . '%');
+            }
+            $products = $products->paginate(10);
+        return view('admin.product.index', compact('products'));
     }
 
     /**

@@ -4,22 +4,34 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
-use Symfony\Component\HttpFoundation\Request;
+use App\Models\ProductCategory;
+use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
     public function index(Request $request)
     {
         $search = $request->input('search');
+        $selectedCategory = $request->input('product_category');
+
+        $productCategories = ProductCategory::orderBy('name')->get();
+
         $products = Product::with('product_category')
             ->when($search, function ($query, $search) {
                 return $query->where('name', 'like', "%{$search}%");
+            })
+            ->when($selectedCategory, function ($query, $selectedCategory) {
+                return $query->whereHas('product_category', function ($categoryQuery) use ($selectedCategory) {
+                    $categoryQuery->where('slug', $selectedCategory);
+                });
             })
             // ->where('stock', '>', 10000)
             ->orderBy('price', 'desc')
             ->paginate(8);
 
-        return view('home', compact('products'));
+        $products->appends($request->query());
+
+        return view('home', compact('products', 'productCategories', 'selectedCategory'));
     }
     public function productDetails($slug)
     {

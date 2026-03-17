@@ -2,7 +2,7 @@
 @section('title', 'Home')
 @section('content')
     @php
-        $categories = ['Semua Produk', 'Sepatu', 'Fashion', 'Aksesoris'];
+        $selectedCategoryName = $productCategories->firstWhere('slug', $selectedCategory)?->name ?? 'Semua Produk';
     @endphp
 
     <div class="container py-4">
@@ -13,11 +13,17 @@
                         Kategori
                     </div>
                     <ul class="list-unstyled mb-0">
-                        @foreach ($categories as $index => $category)
+                        <li>
+                            <a href="{{ route('home') }}"
+                                class="d-flex align-items-center px-3 py-2 text-decoration-none category-link {{ !$selectedCategory ? 'active' : '' }}">
+                                Semua Produk
+                            </a>
+                        </li>
+                        @foreach ($productCategories as $productCategory)
                             <li>
-                                <a href="#"
-                                    class="d-flex align-items-center px-3 py-2 text-decoration-none category-link {{ $index === 0 ? 'active' : '' }}">
-                                    {{ $category }}
+                                <a href="{{ route('home', ['product_category' => $productCategory->slug]) }}"
+                                    class="d-flex align-items-center px-3 py-2 text-decoration-none category-link {{ $selectedCategory === $productCategory->slug ? 'active' : '' }}">
+                                    {{ $productCategory->name }}
                                 </a>
                             </li>
                         @endforeach
@@ -28,9 +34,14 @@
             <div class="flex-grow-1 min-w-0">
                 <div class="d-lg-none mb-3">
                     <div class="d-flex gap-2 flex-wrap">
-                        @foreach ($categories as $index => $category)
-                            <a href="#" class="btn btn-sm {{ $index === 0 ? 'btn-dark' : 'btn-outline-secondary' }}">
-                                {{ $category }}
+                        <a href="{{ route('home') }}"
+                            class="btn btn-sm {{ !$selectedCategory ? 'btn-dark' : 'btn-outline-secondary' }}">
+                            Semua Produk
+                        </a>
+                        @foreach ($productCategories as $productCategory)
+                            <a href="{{ route('home', ['product_category' => $productCategory->slug]) }}"
+                                class="btn btn-sm {{ $selectedCategory === $productCategory->slug ? 'btn-dark' : 'btn-outline-secondary' }}">
+                                {{ $productCategory->name }}
                             </a>
                         @endforeach
                     </div>
@@ -38,15 +49,15 @@
 
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="mb-0 fw-semibold">
-                        Semua Produk
-                        <span class="text-muted fw-normal small">({{ count($products) }} produk)</span>
+                        {{ $selectedCategoryName }}
+                        <span class="text-muted fw-normal small">({{ $products->total() }} produk)</span>
                     </h5>
                 </div>
 
                 <div class="row row-cols-2 row-cols-md-3 row-cols-lg-3 row-cols-xl-4 g-3">
                     @forelse ($products as $product)
                         <div class="col">
-                            <x-product-card :name="$product->name" :price="$product->price" :image="$product->image" :category="$product->category ?? 'Umum'"
+                            <x-product-card :name="$product->name" :price="$product->price" :image="$product->image" :category="$product->product_category?->name ?? 'Umum'"
                                 :slug="$product->slug" />
                         </div>
                     @empty

@@ -11,7 +11,7 @@
             <div class="row g-0">
                 <div class="col-lg-5">
                     <div class="h-100" style="background: #f8f9fa;">
-                        <img src="{{ $product->image }}" alt="{{ $product->name }}" class="w-100 h-100"
+                        <img src="{{ asset('images/' . $product->image) }}" alt="{{ $product->name }}" class="w-100 h-100"
                             style="object-fit: cover; min-height: 320px;"
                             onerror="this.onerror=null;this.src='https://via.placeholder.com/800x800?text=No+Image';">
                     </div>

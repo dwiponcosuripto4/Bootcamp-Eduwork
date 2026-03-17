@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ProductCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class ProductCategoryController extends Controller
 {
@@ -12,7 +13,11 @@ class ProductCategoryController extends Controller
      */
     public function index()
     {
-        //
+        $productCategories = ProductCategory::withCount('products')
+            ->withSum('products as total_stock' , 'stock')
+            ->get();
+            
+        return view('admin.product-category.index', compact('productCategories'));
     }
 
     /**
@@ -20,7 +25,7 @@ class ProductCategoryController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.product-category.create');
     }
 
     /**
@@ -28,7 +33,16 @@ class ProductCategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255|unique:product_categories,name',
+        ]);
+
+        ProductCategory::create([
+            'name' => $validated['name'],
+            'slug' => Str::slug($validated['name']),
+        ]);
+
+        return redirect()->route('product-categories.index')->with('success', 'Kategori berhasil ditambahkan.');
     }
 
     /**
@@ -44,7 +58,7 @@ class ProductCategoryController extends Controller
      */
     public function edit(ProductCategory $productCategory)
     {
-        //
+        return view('admin.product-category.edit', compact('productCategory'));
     }
 
     /**
@@ -52,7 +66,16 @@ class ProductCategoryController extends Controller
      */
     public function update(Request $request, ProductCategory $productCategory)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255|unique:product_categories,name,' . $productCategory->id,
+        ]);
+
+        $productCategory->update([
+            'name' => $validated['name'],
+            'slug' => Str::slug($validated['name']),
+        ]);
+
+        return redirect()->route('product-categories.index')->with('success', 'Kategori berhasil diperbarui.');
     }
 
     /**
@@ -60,6 +83,8 @@ class ProductCategoryController extends Controller
      */
     public function destroy(ProductCategory $productCategory)
     {
-        //
+        $productCategory->delete();
+
+        return redirect()->route('product-categories.index')->with('success', 'Kategori berhasil dihapus.');
     }
 }
