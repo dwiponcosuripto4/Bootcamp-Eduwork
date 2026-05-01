@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProductController;
@@ -13,16 +14,14 @@ Route::get('/product-detail/{slug}', [HomeController::class, 'productDetails'])-
 
 
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::prefix('admin')->group(function () {
         Route::get('/dashboard', function () {
-            echo "Admin Dashboard";
+            return view('admin.dashboard');
         });
-        Route::resource('admin/products', ProductController::class);
+        Route::resource('products', ProductController::class);
         Route::resource('product-categories', ProductCategoryController::class);
     });
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

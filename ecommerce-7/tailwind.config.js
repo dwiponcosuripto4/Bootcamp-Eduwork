@@ -7,7 +7,10 @@ export default {
         "./vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php",
         "./storage/framework/views/*.php",
         "./resources/views/**/*.blade.php",
+        "./app/**/*.php",
     ],
+
+    safelist: ["bg-blue-500", "bg-green-500", "bg-yellow-500", "bg-red-500"],
 
     theme: {
         extend: {

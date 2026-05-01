@@ -1,5 +1,4 @@
-<x-app-layout>
-    <x-slot name="title">Create Product | Laravel</x-slot>
+<x-app-layout :title="'Tambah Produk'">
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-[#7A0C0C] leading-tight">
             {{ __('Products') }}
