@@ -21,31 +21,31 @@ class DashboardController extends Controller
             ['label' => 'Produk',
                 'value' => $jumlahProduk,
                 'icon' => 'inventory_2',
-                'color' => 'bg-blue-500',
+                'color' => '#8B0000',
             ],
             [
                 'label' => 'Kategori',
                 'value' => $jumlahKategori,
                 'icon' => 'category',
-                'color' => 'bg-green-500',
+                'color' => '#16A34A',
             ],
             [
                 'label' => 'Pesanan',
                 'value' => $jumlahPesanan,
                 'icon' => 'order_approve',
-                'color' => 'bg-yellow-500',
+                'color' => '#D4AF37',
             ],
             [
                 'label' => 'Klik',
                 'value' => $jumlahKlik,
                 'icon' => 'touch_app',
-                'color' => 'bg-red-500',
+                'color' => '#2563EB',
             ],
             [
                 'label' => 'Stock',
                 'value' => $jumlahStock,
                 'icon' => 'inventory_2',
-                'color' => 'bg-purple-500',
+                'color' => '#7C3AED',
             ],
         ];
         $chartData = $this->orderDataDummy();

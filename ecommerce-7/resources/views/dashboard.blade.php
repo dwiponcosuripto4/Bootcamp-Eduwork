@@ -10,7 +10,14 @@
             <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 px-2 lg:gap-4 gap-2">
                 @foreach ($data as $index => $item)
                     <div class="w-full">
-                        <div class="overflow-hidden shadow-sm rounded-lg p-6 {{ $item['color'] }} text-white">
+                        @php
+                            $bg = $item['color'] ?? '';
+                            $isHex = function_exists('str_starts_with')
+                                ? str_starts_with($bg, '#')
+                                : \Illuminate\Support\Str::startsWith($bg, '#');
+                        @endphp
+                        <div class="overflow-hidden shadow-sm rounded-lg p-6 text-white {{ $isHex ? '' : $bg }}"
+                            style="{{ $isHex ? 'background-color: ' . $bg . ';' : '' }}">
                             <div class="flex items-center justify-between">
                                 <p class="mt-2 text-3xl font-bold">{{ $item['value'] }}</p>
                                 <span class="material-symbols-outlined text-[40px]">
@@ -37,21 +44,27 @@
                     <table class="min-w-[640px] w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     ID</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Order Number</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Total</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Status</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             @forelse ($latestOrders as $order)
                                 <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $order->id }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $order->order_number }}
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $order->id }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        {{ $order->order_number }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Rp
                                         {{ number_format($order->total_amount, 0, ',', '.') }}</td>
