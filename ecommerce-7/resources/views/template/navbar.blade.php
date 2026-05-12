@@ -66,7 +66,11 @@
                 <div class="d-flex align-items-center gap-2">
                     <ul class="navbar-nav d-none d-lg-flex flex-row mb-0">
                     </ul>
-
+                    <button class="btn btn-outline-light border-0 p-1 ms-2 d-lg-none" type="button"
+                        aria-controls="mobileSearch" :aria-expanded="mobileSearchOpen.toString()"
+                        aria-label="Toggle search" @click="mobileSearchOpen = !mobileSearchOpen">
+                        <i class="bi bi-search"></i>
+                    </button>
                     @if (Route::has('login'))
                         @auth
                             <a href="{{ route('cart.index') }}" class="btn btn-outline-light position-relative">
@@ -137,12 +141,6 @@
                             </x-dropdown>
                         @endauth
                     @endif
-                    <button class="btn btn-outline-light border-0 p-1 ms-2" type="button" aria-controls="mobileSearch"
-                        :aria-expanded="mobileSearchOpen.toString()" aria-label="Toggle search"
-                        @click="mobileSearchOpen = !mobileSearchOpen">
-                        <i class="bi bi-search"></i>
-                    </button>
-
                 </div>
 
             </div>
