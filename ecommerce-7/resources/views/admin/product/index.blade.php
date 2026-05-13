@@ -8,8 +8,13 @@
         <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css">
     @endpush
 
-    <div class="py-12 bg-slate-50 min-h-[70vh]">
+    <div class="py-5 bg-slate-50 min-h-[70vh]">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            @if (session('success'))
+                <div class="mb-4 rounded-md bg-green-100 text-green-800 px-4 py-3 text-sm">
+                    {{ session('success') }}
+                </div>
+            @endif
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-[#E53935]/20">
                 <div class="p-6 text-[#7A0C0C]">
                     <div class="flex items-center justify-between mb-6">
@@ -20,11 +25,7 @@
                         </a>
                     </div>
 
-                    @if (session('success'))
-                        <div class="mb-4 rounded-md bg-green-100 text-green-800 px-4 py-3 text-sm">
-                            {{ session('success') }}
-                        </div>
-                    @endif
+
                     <div class="mb-4">
                         <form action="{{ route('products.index') }}" method="GET">
                             <input type="text" name="search" placeholder="Cari produk..."

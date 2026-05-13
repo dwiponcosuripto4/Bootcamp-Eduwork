@@ -20,8 +20,23 @@
         </style>
     @endpush
 
-    <div class="py-12 bg-slate-50 min-h-[70vh]">
+    <div class="py-5 bg-slate-50 min-h-[70vh]">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            @if (session('success'))
+                <div class="mb-4 rounded-md bg-green-100 text-green-800 px-4 py-3 text-sm">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            @if ($errors->any())
+                <div class="mb-4 rounded-md bg-red-100 text-red-800 px-4 py-3 text-sm">
+                    <ul class="list-disc list-inside">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-[#E53935]/20">
                 <div class="p-6 text-[#7A0C0C]">
                     <div class="flex items-center justify-between mb-6">
@@ -29,13 +44,6 @@
                         <x-primary-button x-data=""
                             x-on:click.prevent="$dispatch('open-modal', 'create-new-category')">{{ __('Tambah Kategori') }}</x-primary-button>
                     </div>
-
-                    @if (session('success'))
-                        <div class="mb-4 rounded-md bg-green-100 text-green-800 px-4 py-3 text-sm">
-                            {{ session('success') }}
-                        </div>
-                    @endif
-
                     <div class="overflow-x-auto">
                         <table id="productCategoriesTable" class="display stripe hover" style="width:100%">
                             <thead>
@@ -55,7 +63,7 @@
                                         <td>{{ $productCategory->name }}</td>
                                         <td>{{ $productCategory->slug }}</td>
                                         <td>{{ $productCategory->products_count }}</td>
-                                        <td>{{ $productCategory->total_stock }}</td>
+                                        <td>{{ $productCategory->total_stock ?? 'Produk belum tersedia' }}</td>
                                         <td>
                                             <div class="flex items-center gap-2">
                                                 <x-primary-button x-data=""
@@ -133,12 +141,6 @@
                     <x-text-input id="name" name="name" type="text" class="mt-1 block w-full"
                         value="{{ old('name') }}" required />
                     <x-input-error :messages="$errors->get('name')" class="mt-2" />
-                </div>
-                <div class="mt-4">
-                    <x-input-label for="slug" value="{{ __('Slug') }}" />
-                    <x-text-input id="slug" name="slug" type="text" class="mt-1 block w-full"
-                        value="{{ old('slug') }}" required />
-                    <x-input-error :messages="$errors->get('slug')" class="mt-2" />
                 </div>
                 <div class="mt-6 flex justify-end">
                     <x-secondary-button x-on:click="$dispatch('close')">

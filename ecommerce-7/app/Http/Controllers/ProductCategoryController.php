@@ -23,10 +23,10 @@ class ProductCategoryController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        return view('admin.product-category.create');
-    }
+    // public function create()
+    // {
+    //     return view('admin.product-category.create');
+    // }
 
     /**
      * Store a newly created resource in storage.
@@ -35,14 +35,17 @@ class ProductCategoryController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:product_categories,name',
+            // 'slug' => 'required|string|max:255|unique:product_categories,slug',
         ]);
+
+        $slug = strtolower(str_replace(' ', '-', $request->name));
 
         ProductCategory::create([
-            'name' => $validated['name'],
-            'slug' => Str::slug($validated['name']),
+            'name' => $request->name,
+            'slug' => $slug,
         ]);
 
-        return redirect()->route('product-categories.index')->with('success', 'Kategori berhasil ditambahkan.');
+        return redirect()->back()->with('success', 'Kategori berhasil ditambahkan.');
     }
 
     /**
@@ -68,14 +71,15 @@ class ProductCategoryController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:product_categories,name,' . $productCategory->id,
+            'slug' => 'required|string|max:255|unique:product_categories,slug,' . $productCategory->id,
         ]);
 
         $productCategory->update([
             'name' => $validated['name'],
-            'slug' => Str::slug($validated['name']),
+            'slug' => $validated['slug'],
         ]);
 
-        return redirect()->route('product-categories.index')->with('success', 'Kategori berhasil diperbarui.');
+        return redirect()->back()->with('success', 'Kategori berhasil diperbarui.');
     }
 
     /**
@@ -85,6 +89,6 @@ class ProductCategoryController extends Controller
     {
         $productCategory->delete();
 
-        return redirect()->route('product-categories.index')->with('success', 'Kategori berhasil dihapus.');
+        return redirect()->back()->with('success', 'Kategori berhasil dihapus.');
     }
 }
