@@ -50,8 +50,17 @@
                             </div>
                             <div>
                                 <x-input-label for="image" :value="__('Gambar')" />
-                                <x-text-input id="image" name="image" type="file" class="mt-1 block w-full"
+                                <x-text-input id="image" name="image_file" type="file" class="mt-1 block w-full"
                                     accept="image/*" />
+                                <input type="hidden" id="image_cropped" name="image" />
+                                @if ($product->image)
+                                    <div class="mt-3">
+                                        <p class="text-xs text-gray-500">Gambar saat ini</p>
+                                        <img src="{{ Storage::disk('images')->url($product->image) }}"
+                                            alt="{{ $product->name }}"
+                                            class="mt-2 h-24 w-24 rounded-md border border-gray-200 object-cover" />
+                                    </div>
+                                @endif
                                 <div class="mt-3">
                                     <div id="croppie-container" class="hidden"></div>
                                     <div class="mt-3 flex items-center gap-2">
@@ -101,53 +110,54 @@
     @push('scripts')
         <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
         <script>
-            document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('DOMContentLoaded', () => {
                 const imageInput = document.getElementById('image');
+                const imageCropped = document.getElementById('image_cropped');
                 const croppieContainer = document.getElementById('croppie-container');
                 const cropButton = document.getElementById('crop-image');
                 const cropStatus = document.getElementById('crop-status');
                 const form = document.querySelector('form');
+
                 let croppieInstance = null;
+                let outputFormat = 'webp';
 
                 const resetCroppie = () => {
                     if (croppieInstance) {
                         croppieInstance.destroy();
                         croppieInstance = null;
                     }
+                    croppieContainer.innerHTML = '';
                     croppieContainer.classList.add('hidden');
                     cropButton.classList.add('hidden');
                     cropStatus.textContent = '';
+                    imageCropped.value = '';
                 };
 
-                // image validation + croppie setup
-                imageInput.addEventListener('change', function() {
-                    const file = this.files[0];
-                    resetCroppie();
-
+                imageInput.addEventListener('change', (event) => {
+                    const file = event.target.files && event.target.files[0];
                     if (!file) {
+                        resetCroppie();
                         return;
                     }
 
                     const fileType = file.type;
-                    const validImageTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
-                    if (!validImageTypes.includes(fileType)) {
-                        alert('File harus berupa gambar (jpg, png, webp).');
-                        this.value = '';
+                    const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
+                    if (!validTypes.includes(fileType)) {
+                        resetCroppie();
+                        cropStatus.textContent = 'Format gambar tidak didukung.';
                         return;
                     }
 
-                    // file size validation (max 2MB)
-                    const maxSize = 2 * 1024 * 1024; // 2MB
-                    if (file.size > maxSize) {
-                        alert('Ukuran file tidak boleh lebih dari 2MB.');
-                        this.value = '';
-                        return;
-                    }
+                    outputFormat = fileType === 'image/png' ? 'png' : (fileType === 'image/webp' ? 'webp' :
+                        'jpeg');
 
                     const reader = new FileReader();
-                    reader.onload = function(event) {
+                    reader.onload = (e) => {
+                        resetCroppie();
                         croppieContainer.classList.remove('hidden');
                         cropButton.classList.remove('hidden');
+                        cropStatus.textContent = 'Silakan crop gambar.';
+
                         croppieInstance = new Croppie(croppieContainer, {
                             viewport: {
                                 width: 300,
@@ -160,58 +170,58 @@
                             },
                             enableOrientation: true,
                             minZoom: 0.5,
-                            maxZoom: 2
+                            maxZoom: 2,
                         });
+
                         croppieInstance.bind({
-                            url: event.target.result
+                            url: e.target.result
                         });
-                        cropStatus.textContent = 'Silakan crop ke 1:1 sebelum simpan.';
                     };
                     reader.readAsDataURL(file);
                 });
 
-                cropButton.addEventListener('click', function() {
+                cropButton.addEventListener('click', async () => {
                     if (!croppieInstance) {
                         return;
                     }
-                    croppieInstance.result({
-                        type: 'blob',
+
+                    cropStatus.textContent = 'Memproses crop...';
+
+                    const result = await croppieInstance.result({
+                        type: 'base64',
                         size: {
                             width: 800,
                             height: 800
                         },
-                        format: 'jpeg',
-                        quality: 0.9
-                    }).then(function(blob) {
-                        const croppedFile = new File([blob], 'product-800x800.jpg', {
-                            type: 'image/jpeg'
-                        });
-                        const dataTransfer = new DataTransfer();
-                        dataTransfer.items.add(croppedFile);
-                        imageInput.files = dataTransfer.files;
-                        cropStatus.textContent = 'Crop selesai. Gambar siap diupload.';
+                        format: outputFormat,
+                        quality: 0.9,
                     });
+
+                    imageCropped.value = result;
+                    cropStatus.textContent = 'Gambar siap disimpan.';
                 });
 
-                form.addEventListener('submit', function(event) {
-                    const price = document.getElementById('price').value;
-                    const stock = document.getElementById('stock').value;
-
-                    if (price < 0) {
-                        alert('Harga tidak boleh negatif.');
-                        event.preventDefault();
+                form.addEventListener('submit', async (event) => {
+                    if (!croppieInstance || imageCropped.value) {
                         return;
                     }
 
-                    if (stock < 0) {
-                        alert('Stock tidak boleh negatif.');
-                        event.preventDefault();
-                        return;
-                    }
+                    event.preventDefault();
+                    cropStatus.textContent = 'Memproses crop...';
 
-                    if (imageInput.files.length && croppieInstance) {
-                        cropStatus.textContent = 'Klik tombol Crop 800x800 dulu.';
-                    }
+                    const result = await croppieInstance.result({
+                        type: 'base64',
+                        size: {
+                            width: 800,
+                            height: 800
+                        },
+                        format: outputFormat,
+                        quality: 0.9,
+                    });
+
+                    imageCropped.value = result;
+                    cropStatus.textContent = 'Gambar siap disimpan.';
+                    form.submit();
                 });
             });
         </script>

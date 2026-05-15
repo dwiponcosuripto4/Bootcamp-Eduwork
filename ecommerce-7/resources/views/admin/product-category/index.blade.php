@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-app-layout :title="'Product Category'">
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-[#7A0C0C] leading-tight">
             {{ __('Product Category') }}
@@ -48,7 +48,7 @@
                         <table id="productCategoriesTable" class="display stripe hover" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th>No</th>
+                                    <th>ID</th>
                                     <th>Nama Kategori</th>
                                     <th>Slug</th>
                                     <th>Jumlah Produk</th>
@@ -59,7 +59,7 @@
                             <tbody>
                                 @foreach ($productCategories as $index => $productCategory)
                                     <tr>
-                                        <td>{{ $index + 1 }}</td>
+                                        <td>{{ $productCategory->id }}</td>
                                         <td>{{ $productCategory->name }}</td>
                                         <td>{{ $productCategory->slug }}</td>
                                         <td>{{ $productCategory->products_count }}</td>
@@ -72,7 +72,7 @@
                                                 <form
                                                     action="{{ route('product-categories.destroy', $productCategory->id) }}"
                                                     method="POST"
-                                                    onsubmit="return confirm('Yakin ingin menghapus kategori ini?');">
+                                                    onsubmit="return confirm('Yakin ingin menghapus kategori dengan ID {{ $productCategory->id }}?');">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit"

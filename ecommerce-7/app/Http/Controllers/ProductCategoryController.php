@@ -34,7 +34,7 @@ class ProductCategoryController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:product_categories,name',
+            'name' => 'required|string|max:100|unique:product_categories,name',
             // 'slug' => 'required|string|max:255|unique:product_categories,slug',
         ]);
 
@@ -61,7 +61,7 @@ class ProductCategoryController extends Controller
      */
     public function edit(ProductCategory $productCategory)
     {
-        return view('admin.product-category.edit', compact('productCategory'));
+        // return view('admin.product-category.edit', compact('productCategory'));
     }
 
     /**
@@ -69,14 +69,14 @@ class ProductCategoryController extends Controller
      */
     public function update(Request $request, ProductCategory $productCategory)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:product_categories,name,' . $productCategory->id,
-            'slug' => 'required|string|max:255|unique:product_categories,slug,' . $productCategory->id,
+        $request->validate([
+            'name' => 'required|string|max:100|unique:product_categories,name,' . $productCategory->id,
+            'slug' => 'required|string|max:100|unique:product_categories,slug,' . $productCategory->id,
         ]);
 
         $productCategory->update([
-            'name' => $validated['name'],
-            'slug' => $validated['slug'],
+            'name' => $request->name,
+            'slug' => $request->slug,
         ]);
 
         return redirect()->back()->with('success', 'Kategori berhasil diperbarui.');
@@ -87,8 +87,11 @@ class ProductCategoryController extends Controller
      */
     public function destroy(ProductCategory $productCategory)
     {
+        $product_count = $productCategory->products()->count();
+        if ($product_count > 0) {
+            return redirect()->back()->withErrors(['error' => 'Kategori tidak dapat dihapus karena masih memiliki produk terkait.']);
+        }
         $productCategory->delete();
-
-        return redirect()->back()->with('success', 'Kategori berhasil dihapus.');
+        return redirect()->back()->with('success', 'Product Category with ID ' . $productCategory->id . ' deleted successfully.');
     }
 }

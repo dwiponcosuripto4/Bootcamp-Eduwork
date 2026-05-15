@@ -95,12 +95,43 @@ class ProductController extends Controller
             'description' => 'required|string|max:1000',
             'price' => 'required|integer|min:0',
             'stock' => 'required|integer|min:0',
+            'image' => 'nullable|string',
             'product_category_id' => 'required|exists:product_categories,id',
         ]);
+        $imageName = $product->image;
+        if ($request->filled('image') && str_contains((string) $request->image, ';base64,')) {
+            $imageData = $request->image;
+            $mime = str_replace('data:', '', explode(';', $imageData)[0]);
+            $extensionMap = [
+                'image/jpeg' => 'jpg',
+                'image/jpg' => 'jpg',
+                'image/png' => 'png',
+                'image/webp' => 'webp',
+            ];
+            $extension = $extensionMap[$mime] ?? 'webp';
+            [, $imageData] = explode(';', $imageData);
+            [, $imageData] = explode(',', $imageData);
+            $imageData = base64_decode($imageData);
+            $imageName = 'products/' . uniqid() . '.' . $extension;
+            
+            Storage::disk('images')->put($imageName, $imageData);
 
-        $product->update($request->all());
+            if ($product->image && Storage::disk('images')->exists($product->image)) {
+                Storage::disk('images')->delete($product->image);
+            }
+        }
+        $product->update(
+            [
+                'name' => $request->name,
+                'description' => $request->description,
+                'price' => $request->price,
+                'stock' => $request->stock,
+                'image' => $imageName,
+                'product_category_id' => $request->product_category_id,
+            ]
+        );
 
-        return redirect()->route('products.index')->with('success', 'Produk berhasil diperbarui.');
+        return redirect()->route('products.index')->with('success','Product with ID ' . $product->id . ' updated successfully.');
     }
 
     /**
@@ -108,8 +139,14 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
+        $id = $product->id;
+        if ($product->order_items()->count() > 0) {
+            return redirect()->route('products.index')->with('error', 'Product with ID ' . $id . ' cannot be deleted because it has associated orders.');
+        }
+        if ($product->image && Storage::disk('images')->exists($product->image)) {
+            Storage::disk('images')->delete($product->image);
+        }
         $product->delete();
-
-        return redirect()->route('products.index')->with('success', 'Produk berhasil dihapus.');
+        return redirect()->route('products.index')->with('success', 'Product with ID ' . $id . ' deleted successfully.');
     }
 }

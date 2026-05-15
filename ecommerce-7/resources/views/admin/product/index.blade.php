@@ -41,7 +41,7 @@
                         <table class="w-full border-collapse border border-gray-300">
                             <thead class="bg-[#7A0C0C] text-white">
                                 <tr>
-                                    <th class="border border-gray-300 px-4 py-2 text-left">No</th>
+                                    <th class="border border-gray-300 px-4 py-2 text-left">ID</th>
                                     <th class="border border-gray-300 px-4 py-2 text-left">Nama Produk</th>
                                     <th class="border border-gray-300 px-4 py-2 text-left">Slug</th>
                                     <th class="border border-gray-300 px-4 py-2 text-left">Deskripsi</th>
@@ -55,7 +55,7 @@
                             <tbody>
                                 @foreach ($products as $product)
                                     <tr class="hover:bg-gray-50 border-b border-gray-300">
-                                        <td class="border border-gray-300 px-4 py-2">{{ $loop->iteration }}</td>
+                                        <td class="border border-gray-300 px-4 py-2">{{ $product->id }}</td>
                                         <td class="border border-gray-300 px-4 py-2">{{ $product->name }}</td>
                                         <td class="border border-gray-300 px-4 py-2">{{ $product->slug }}</td>
                                         <td class="border border-gray-300 px-4 py-2">
@@ -77,7 +77,7 @@
                                                     class="inline-flex items-center px-3 py-1.5 bg-amber-500 text-white text-xs font-semibold rounded hover:bg-amber-600 transition">Edit</a>
                                                 <form action="{{ route('products.destroy', $product->id) }}"
                                                     method="POST"
-                                                    onsubmit="return confirm('Yakin ingin menghapus produk ini?');">
+                                                    onsubmit="return confirm('Yakin ingin menghapus produk dengan ID {{ $product->id }}?');">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit"
