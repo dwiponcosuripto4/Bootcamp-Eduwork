@@ -1,5 +1,5 @@
 @extends('template.layouts')
-@section('title', 'Cart Page')
+@section('title', 'Shopping Cart')
 @section('content')
     <style>
         .cart-header {
@@ -126,9 +126,9 @@
         </div>
 
         <div class="container-fluid">
-            @if (session('success'))
+            @if ($successMessage)
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <i class="bi bi-check-circle me-2"></i>{{ session('success') }}
+                    <i class="bi bi-check-circle me-2"></i>{{ $successMessage }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             @endif
@@ -137,7 +137,7 @@
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     <i class="bi bi-exclamation-triangle me-2"></i>
                     <ul class="mb-0">
-                        @foreach ($errors->all() as $error)
+                        @foreach ($errors as $error)
                             <li>{{ $error }}</li>
                         @endforeach
                     </ul>
@@ -191,20 +191,14 @@
                                     <div class="col-12 col-md-auto">
                                         <div
                                             class="d-flex align-items-center gap-3 justify-content-between justify-content-md-end">
-                                            <form class="qty-control" method="POST"
-                                                action="{{ route('cart.update', $cartItem->id) }}">
-                                                @csrf
-                                                @method('PUT')
+                                            <form class="qty-control" onsubmit="return false;">
                                                 <button type="button" onclick="decreaseQty('qty-{{ $cartItem->id }}')">
                                                     <i class="bi bi-dash"></i>
                                                 </button>
-                                                <input type="number" id="qty-{{ $cartItem->id }}" name="quantity"
-                                                    value="{{ (int) $cartItem->quantity }}" min="1">
+                                                <input type="number" id="qty-{{ $cartItem->id }}"
+                                                    value="{{ (int) $cartItem->quantity }}" min="1" readonly>
                                                 <button type="button" onclick="increaseQty('qty-{{ $cartItem->id }}')">
                                                     <i class="bi bi-plus"></i>
-                                                </button>
-                                                <button type="submit" class="btn btn-sm btn-outline-secondary ms-2">
-                                                    Update
                                                 </button>
                                             </form>
 
@@ -214,30 +208,72 @@
                                                     {{ number_format((float) $lineTotal, 0, ',', '.') }}</strong>
                                             </div>
 
-                                            <form method="POST" action="{{ route('cart.destroy', $cartItem->id) }}">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-light text-danger">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </form>
+                                            <button type="button" class="btn btn-sm btn-light text-danger">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         @endforeach
                     </div>
+
                     <div class="col-lg-4">
                         <div class="summary-card">
                             <h5 class="mb-3 fw-bold">Ringkasan Belanja</h5>
 
+                            <div class="summary-row border-bottom">
+                                <span class="text-muted">Total Item</span>
+                                <span class="fw-semibold">{{ $cartTotalQty }} produk</span>
+                            </div>
+
                             <div class="summary-row border-bottom pb-3">
                                 <span class="text-muted">Total Harga</span>
-                                <span class="fw-bold">Rp {{ number_format((float) $cartTotal, 0, ',', '.') }}</span>
+                                <span class="fw-bold">Rp {{ number_format((float) $cartGrandTotal, 0, ',', '.') }}</span>
                             </div>
-                            <a href="{{ route('checkout') }}" class="btn btn-checkout w-100 mt-3">
-                                <i class="bi bi-bag-check me-2"></i>Checkout 1 Item
-                            </a>
+
+                            <div class="summary-row pt-2">
+                                <span class="fw-bold fs-6">Total Pembayaran</span>
+                                <span class="summary-total">Rp
+                                    {{ number_format((float) $cartGrandTotal, 0, ',', '.') }}</span>
+                            </div>
+
+                            <form class="mt-4" onsubmit="return false;">
+                                <div class="customer-form">
+                                    <h6 class="mb-3 fw-bold"><i class="bi bi-person-circle me-2"></i>Data Pembeli</h6>
+
+                                    <div class="mb-2">
+                                        <label class="form-label small mb-1">Nama Lengkap <span
+                                                class="text-danger">*</span></label>
+                                        <input type="text" class="form-control form-control-sm"
+                                            placeholder="Nama lengkap">
+                                    </div>
+
+                                    <div class="mb-2">
+                                        <label class="form-label small mb-1">Email <span
+                                                class="text-danger">*</span></label>
+                                        <input type="email" class="form-control form-control-sm"
+                                            placeholder="email@example.com">
+                                    </div>
+
+                                    <div class="mb-2">
+                                        <label class="form-label small mb-1">Nomor Telepon <span
+                                                class="text-danger">*</span></label>
+                                        <input type="tel" class="form-control form-control-sm"
+                                            placeholder="08xxxxxxxxxx">
+                                    </div>
+
+                                    <div class="mb-0">
+                                        <label class="form-label small mb-1">Alamat <span
+                                                class="text-danger">*</span></label>
+                                        <textarea class="form-control form-control-sm" rows="2" placeholder="Alamat lengkap"></textarea>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-checkout w-100 mt-3">
+                                    <i class="bi bi-bag-check me-2"></i>Checkout ({{ $cartTotalQty }} Item)
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>

@@ -53,12 +53,21 @@
                         <span class="text-muted fw-normal small">({{ $products->total() }} produk)</span>
                     </h5>
                 </div>
-
+                @if (session('success'))
+                    <div class="alert alert-success w-100">
+                        {{ session('success') }}
+                    </div>
+                @endif
+                @if (session('error'))
+                    <div class="alert alert-danger w-100">
+                        {{ session('error') }}
+                    </div>
+                @endif
                 <div class="row row-cols-2 row-cols-md-3 row-cols-lg-3 row-cols-xl-4 g-3">
                     @forelse ($products as $product)
                         <div class="col">
-                            <x-product-card :name="$product->name" :price="$product->price" :image="$product->image" :category="$product->product_category?->name ?? 'Umum'"
-                                :slug="$product->slug" />
+                            <x-product-card :id="$product->id" :name="$product->name" :price="$product->price" :image="$product->image"
+                                :category="$product->product_category?->name ?? 'Umum'" :slug="$product->slug" />
                         </div>
                     @empty
                         <div class="col-12">

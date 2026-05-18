@@ -4,7 +4,7 @@
 @section('content')
     <div class="container py-4">
         <div class="mb-3">
-            <a href="{{ url()->previous() }}" class="btn btn-sm btn-outline-secondary">&larr; Kembali</a>
+            <a href="{{ route('home') }}" class="btn btn-sm btn-outline-secondary">&larr; Kembali</a>
         </div>
 
         <div class="card border-0 shadow-sm overflow-hidden">
@@ -44,7 +44,21 @@
                         </div>
 
                         <div class="mt-auto d-flex gap-2 flex-wrap">
-                            <a href="#" class="btn btn-danger px-4">+ Keranjang</a>
+                            @if (session('success'))
+                                <div class="alert alert-success w-100">
+                                    {{ session('success') }}
+                                </div>
+                            @endif
+                            @if (session('error'))
+                                <div class="alert alert-danger w-100">
+                                    {{ session('error') }}
+                                </div>
+                            @endif
+                            <form action="{{ route('cart.store') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                <button type="submit" class="btn btn-danger px-4">+ Keranjang</button>
+                            </form>
                             <a href="{{ route('cart.index') }}" class="btn btn-outline-dark px-4">Lihat Keranjang</a>
                         </div>
                         <div class="col-12">
@@ -52,8 +66,8 @@
                             <div class="row g-3 mt-2">
                                 @foreach ($prouct_recommendation as $item)
                                     <div class="col-md-3">
-                                        <x-product-card :name="$item->name" :price="$item->price" :image="$item->image"
-                                            :category="$item->product_category->name ?? 'Umum'" :slug="$item->slug" />
+                                        <x-product-card :id="$item->id" :name="$item->name" :price="$item->price"
+                                            :image="$item->image" :category="$item->product_category->name ?? 'Umum'" :slug="$item->slug" />
                                     </div>
                                 @endforeach
                             </div>

@@ -24,11 +24,14 @@
         </div>
         <a href="{{ route('product.detail', ['slug' => $slug]) }}" class="stretched-link"
             aria-label="Lihat detail {{ $name }}"></a>
-        <a href="#" class="btn btn-sm w-100 mt-auto position-relative z-1"
-            style="background: #E53935; color: #fff; font-size: .78rem; border: none;">
-            + Keranjang
-        </a>
+        <form action="{{ route('cart.store') }}" method="POST" class="mt-auto position-relative z-1">
+            @csrf
+            <input type="hidden" name="product_id" value="{{ $id }}">
+            <input type="hidden" name="quantity" value="1">
+            <button type="submit" class="btn btn-sm w-100"
+                style="background: #E53935; color: #fff; font-size: .78rem; border: none;">
+                + Keranjang
+            </button>
+        </form>
     </div>
-
-
 </div>
