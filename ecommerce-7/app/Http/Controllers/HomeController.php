@@ -26,7 +26,7 @@ class HomeController extends Controller
                 });
             })
             // ->where('stock', '>', 10000)
-            ->orderBy('price', 'desc')
+            ->orderBy('id', 'desc')
             ->paginate(8);
 
         $products->appends($request->query());
@@ -45,6 +45,20 @@ class HomeController extends Controller
             ->take(4)
             ->get();
 
+        $this->clickCounter($product);
+
         return view('product_detail', compact('product', 'prouct_recommendation'));
+    }
+
+    private function clickCounter(Product $product)
+    {
+        // add 1 to clicks to session to prevent multiple clicks from the same user in a short time
+        $sessionKey = 'product_click_' . $product->id;
+        if (!session()->has($sessionKey)) {
+            session()->put($sessionKey, true);
+            $product->clicks += 1;
+            $product->save();
+        }
+        
     }
 }

@@ -71,17 +71,17 @@
                         aria-label="Toggle search" @click="mobileSearchOpen = !mobileSearchOpen">
                         <i class="bi bi-search"></i>
                     </button>
+                    <a href="{{ route('cart.index') }}" class="btn btn-outline-light position-relative">
+                        <i class="bi bi-cart3"></i>
+                        @if ($cartTotalQty > 0)
+                            <span
+                                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                {{ $cartTotalQty }}
+                            </span>
+                        @endif
+                    </a>
                     @if (Route::has('login'))
                         @auth
-                            <a href="{{ route('cart.index') }}" class="btn btn-outline-light position-relative">
-                                <i class="bi bi-cart3"></i>
-                                @if ($cartTotalQty > 0)
-                                    <span
-                                        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                        {{ $cartTotalQty }}
-                                    </span>
-                                @endif
-                            </a>
                             <x-dropdown align="right" width="48">
                                 <x-slot name="trigger">
                                     <button class="btn btn-sm btn-light d-inline-flex align-items-center">

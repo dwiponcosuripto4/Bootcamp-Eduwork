@@ -47,6 +47,7 @@
                                     <th class="border border-gray-300 px-4 py-2 text-left">Deskripsi</th>
                                     <th class="border border-gray-300 px-4 py-2 text-left">Harga</th>
                                     <th class="border border-gray-300 px-4 py-2 text-left">Stock</th>
+                                    <th class="border border-gray-300 px-4 py-2 text-left">Klik</th>
                                     <th class="border border-gray-300 px-4 py-2 text-left">Gambar</th>
                                     <th class="border border-gray-300 px-4 py-2 text-left">Kategori</th>
                                     <th class="border border-gray-300 px-4 py-2 text-left">Aksi</th>
@@ -63,6 +64,7 @@
                                         <td class="border border-gray-300 px-4 py-2">Rp
                                             {{ number_format($product->price, 2, ',', '.') }}</td>
                                         <td class="border border-gray-300 px-4 py-2">{{ $product->stock }}</td>
+                                        <td class="border border-gray-300 px-4 py-2">{{ $product->clicks }}</td>
                                         <td class="border border-gray-300 px-4 py-2"><img
                                                 src="{{ asset('images/' . $product->image) }}"
                                                 alt="{{ $product->name }}" class="w-16 h-16 object-cover rounded"></td>

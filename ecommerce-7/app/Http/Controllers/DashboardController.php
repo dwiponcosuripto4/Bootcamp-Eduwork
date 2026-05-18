@@ -13,9 +13,9 @@ class DashboardController extends Controller
     {
         $jumlahProduk = Product::count();
         $jumlahKategori = ProductCategory::count();
-        $jumlahPesanan = Order::count();
+        $jumlahOrder = Order::count();
         $jumlahStock = Product::sum('stock');
-        $jumlahKlik = 200;
+        $jumlahKlik = Product::sum('clicks');
         $latestOrders = Order::latest()->take(5)->get();
         $data = [
             ['label' => 'Produk',
@@ -31,7 +31,7 @@ class DashboardController extends Controller
             ],
             [
                 'label' => 'Pesanan',
-                'value' => $jumlahPesanan,
+                'value' => $jumlahOrder,
                 'icon' => 'order_approve',
                 'color' => '#D4AF37',
             ],
