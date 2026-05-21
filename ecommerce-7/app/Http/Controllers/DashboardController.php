@@ -48,25 +48,39 @@ class DashboardController extends Controller
                 'color' => '#7C3AED',
             ],
         ];
-        $chartData = $this->orderDataDummy();
+        $chartData = $this->orderData();
         return view('dashboard', compact('data', 'chartData', 'latestOrders'));
     }
 
     // Array Data dummy untuk grafik penjualan per minggu (jumlah order dan total pendapatan)
-    public static function orderDataDummy()
+    public static function orderData()
     {
+        $date_labels = [
+            Carbon::now()->subDays(6)->format('Y-m-d'),
+            Carbon::now()->subDays(5)->format('Y-m-d'),
+            Carbon::now()->subDays(4)->format('Y-m-d'),
+            Carbon::now()->subDays(3)->format('Y-m-d'),
+            Carbon::now()->subDays(2)->format('Y-m-d'),
+            Carbon::now()->subDays(1)->format('Y-m-d'),
+            Carbon::now()->format('Y-m-d'),
+        ];
+        //grab data order dari database, lalu group by tanggal dan hitung jumlah order dan total pendapatan 
+        $orders_data = Order::selectRaw('DATE(created_at) as date, COUNT(*) as orders, SUM(total_amount) as revenue')
+            ->groupBy('date')
+            ->orderBy('date', 'asc')
+            ->get();
+        
+        $total_orders = [];
+        $total_revenue = [];
+        foreach ($date_labels as $date) {
+            $order = $orders_data->firstWhere('date', $date);
+            $total_orders[] = $order ? (int) $order->orders : 0;
+            $total_revenue[] = $order ? (int) $order->revenue : 0;
+        }
         return [
-            'labels' => [
-                Carbon::now()->subDays(6)->format('Y-m-d'),
-                Carbon::now()->subDays(5)->format('Y-m-d'),
-                Carbon::now()->subDays(4)->format('Y-m-d'),
-                Carbon::now()->subDays(3)->format('Y-m-d'),
-                Carbon::now()->subDays(2)->format('Y-m-d'),
-                Carbon::now()->subDays(1)->format('Y-m-d'),
-                Carbon::now()->format('Y-m-d'),
-            ],
-            'orders' => [12, 19, 8, 15, 25, 10, 18],
-            'revenue' => [5000, 8500, 3200, 7100, 11500, 9000, 12000]
+            'labels' => $date_labels,
+            'orders' => $total_orders,
+            'revenue' => $total_revenue
         ];
     }
 }

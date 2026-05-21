@@ -75,8 +75,8 @@
                 <h2 class="order-title mb-1">Detail Pesanan</h2>
                 <p class="text-muted mb-0">Terima kasih! Pesanan kamu sudah tercatat.</p>
             </div>
-            <a href="/" class="btn btn-outline-secondary btn-sm">
-                <i class="bi bi-arrow-left me-1"></i> Kembali Belanja
+            <a href="{{ route('orders.index') }}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left me-1"></i> Pesanan
             </a>
         </div>
 

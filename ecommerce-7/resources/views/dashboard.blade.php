@@ -38,7 +38,11 @@
                 </div>
             </div>
             <div class="p-6 bg-white overflow-hidden shadow-sm rounded-lg border border-[#E53935]/20">
-                <h3 class="text-lg font-semibold text-gray-800 mb-4">Order Terbaru</h3>
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800">Order Terbaru</h3>
+                    <a href="{{ route('orders.index') }}" class="text-sm text-blue-500 hover:text-blue-700">Lihat
+                        Semua</a>
+                </div>
                 {{-- table for latest orders --}}
                 <div class="overflow-x-auto">
                     <table class="min-w-[640px] w-full divide-y divide-gray-200">
@@ -69,27 +73,10 @@
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Rp
                                         {{ number_format($order->total_amount, 0, ',', '.') }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                        @if ($order->status == 'pending')
-                                            <span
-                                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                                                Pending
-                                            </span>
-                                        @elseif ($order->status == 'completed')
-                                            <span
-                                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                Completed
-                                            </span>
-                                        @elseif ($order->status == 'cancelled')
-                                            <span
-                                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                                                Cancelled
-                                            </span>
-                                        @else
-                                            <span
-                                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                                                {{ ucfirst($order->status) }}
-                                            </span>
-                                        @endif
+                                        <span
+                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $order->status == 'pending' ? 'bg-yellow-100 text-yellow-800' : ($order->status == 'processing' ? 'bg-blue-100 text-blue-800' : ($order->status == 'completed' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')) }}">
+                                            {{ ucfirst($order->status) }}
+                                        </span>
                                     </td>
                                 </tr>
                             @empty

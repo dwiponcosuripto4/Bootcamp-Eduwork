@@ -14,10 +14,15 @@ class CartController extends Controller
      */
     public function index()
     {
-        if(Auth::check()) {
+        if (Auth::check()) {
             $cartItems = Cart::with('product')
-            ->where('user_id', Auth::id())
-            ->get();
+                ->where('user_id', Auth::id())
+                ->get();
+
+            $cartTotal = $cartItems->sum(function ($cartItem) {
+                return (float) $cartItem->product->price * (int) $cartItem->quantity;
+            });
+
             return view('cart', compact('cartItems', 'cartTotal'));
         } else {
             return redirect()->route('login')->with('error', 'Please login to view your cart');
